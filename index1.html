@@ -1,0 +1,598 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=uft8" />
+    <title>ZBZD保障运行三维综合管理平台</title>
+	/*test201802*/
+    <link rel="stylesheet" type="text/css" href="core/lib/easyui/themes/ui-cupertino/easyui.css">
+    <link rel="stylesheet" type="text/css" href="core/lib/easyui/themes/icon.css">
+    <link rel="stylesheet" href="core/css/index.css" />
+    <link rel="stylesheet" type="text/css" href="core/newmap/newmap.css">
+    <link rel="stylesheet" href="emergency/core/css/eme.css" />
+    <link rel="stylesheet" href="control/core/lib/laydate/need/laydate.css" />
+    <script type="text/javascript" src="core/lib/jquery/jquery-latest.js"></script>
+    <script type="text/javascript" src="core/lib/easyui/jquery.easyui.min.js"></script>
+
+    <script type="text/javascript" src="core/js/common.js"></script>
+    <script type="text/jscript">
+        /*if (typeof (getCookie('nmp_username')) == 'undefined' || typeof (getCookie('nmp_rid')) == 'undefined') {
+            self.location = "./login.html";
+        }          test2018*/
+    </script>
+    <!-- ztree v 3.5 -->
+    <link rel="stylesheet" href="core/lib/tree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <script type="text/javascript" src="core/lib/tree/js/jquery.ztree.core-3.5.min.js"></script>
+    <script type="text/javascript" src="core/lib/tree/js/jquery.ztree.exedit-3.5.min.js"></script>
+    <script type="text/javascript" src="core/earth/newmap_earth_common.js"></script>
+    <script type="text/javascript" src="core/earth/newmap_earth_main.js"></script>
+    <script type="text/javascript" src="core/newmap/NewMap.js"></script>
+    <script type="text/javascript" src="core/earth/newmap_earth_event.js"></script>
+    <script type="text/javascript" src="core/lib/earthextend/newmap_earth_extend.js"></script>
+    <script type="text/javascript" src="core/js/config_map.js"></script>
+    <script type="text/javascript" src="core/js/init.js"></script>
+    <script type="text/javascript" src="core/js/global.js"></script>
+    <script type="text/javascript" src="core/js/main.js"></script>
+    <script type="text/javascript" src="core/js/saXMLUtils.js"></script>
+    <script type="text/javascript" src="core/js/user.js"></script>
+    <script type="text/javascript" src="core/js/constant.js"></script>
+    <script type="text/javascript" src="control/core/js/service.js"></script>
+</head>
+<body id="container" class="easyui-layout" onload="viewMap3DGlobe()">
+    <!-- 工具栏 -->
+    <div region="north" border="false" style="height: 100px;">
+        <div id="user_info" style='width: 10px;'>
+            <ul class="headmenuCss" id="headmenuCon">
+                <li id="menu_uinfo" title=""><a href="#"></a></li>
+                <li id="menu_dinfo" title=""><a href="#"></a></li>
+            </ul>
+            <div id="infobar" style='display: block;'>
+                <span class="icon-standard-users" id='welinfo' style="padding: 0 0 0px 18px; background-position: left center;"></span>
+            </div>
+        </div>
+        <div class='headbg' style="background: url('./core/images/bgHead.jpg') no-repeat; background-size: 100% 100%">
+            <div class="headlogo"></div>
+            <div id='plandiv1' style="position: absolute; top: 40px; right: 15px; display: block;">
+                <div class="backPicture2" name="btnmodel" id='btnmodle1' style="background-color: #ffffff; font-family: '微软雅黑'; color: black; width: 80px; height: 30px; border: 1px solid #daecfa; border-radius: 5px; line-height: 30px">态势集成</div>
+                <div class="backPicture2" name="btnmodel" id='btnmodle4' style="background-color: #69C0DC; font-family: '微软雅黑'; color: white; width: 80px; height: 30px; border: 1px solid #daecfa; border-radius: 5px; line-height: 30px">管控保障</div>
+				<div class="backPicture2" name="btnmodel" id='btnmodle3' style="background-color: #69C0DC; font-family: '微软雅黑'; color: white; width: 80px; height: 30px; border: 1px solid #daecfa; border-radius: 5px; line-height: 30px">管线管理</div>
+				<div class="backPicture2" name="btnmodel" id='btnmodle2' style="background-color: #69C0DC; font-family: '微软雅黑'; color: white; width: 80px; height: 30px; border: 1px solid #daecfa; border-radius: 5px; line-height: 30px">应急预案</div>
+                <div class="backPicture2" name="btnmodel" id='systemSet' style="background-color: #69C0DC; font-family: '微软雅黑'; color: white; width: 80px; height: 30px; border: 1px solid #daecfa; border-radius: 5px; line-height: 30px">维护管理</div>
+            </div>
+        </div>
+
+        <div id="toolbar" class="panel-header panel-header-noborder top-toolbar" style='display: block;'>
+            <!--<div id="infobar" style='display: block;'>
+                <span class="icon-standard-users" id='welinfo' style="padding: 0 0 0px 18px; background-position: left center;"></span>
+            </div>-->
+            <div id="2dbar" style="display: none;">
+                <div>
+                    <a id="btnFullScreen" title="全图" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-world', tooltip: '全图'">全图</a>
+                    <a id="btnZoomIn" title="放大" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-zoomin', tooltip: '放大'">放大</a>
+                    <a id="btnZoomOut" title="缩小" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-zoomout', tooltip: '缩小'">缩小</a>
+                    <a id="btnMove" title="平移" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-move', tooltip: '平移'">平移</a>
+                    <a id="btnPoint" title="点选" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-mini-edit', tooltip: '点选'">点选</a>
+                    <a id="btnPolygon" title="框选" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-项目录入',tooltip:'框选'">框选</a>
+                    <a id="btnSearch" title="属性查询" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-search',tooltip:'查询'">属性查询</a>
+                    <a id="btnModelAttrE2D" title="属性编辑" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-database-edit'" onclick='set3DMode("mattredit")'>属性编辑</a>
+                    <a id="btnbuffer" title="缓冲查询" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-片区查询',tooltip:'缓冲查询'">缓冲查询</a>
+                    <a id="btnLength" title="距离量测" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-距离测量',tooltip:'距离量测'">距离量测</a>
+                    <a id="btnArea" title="面积量测" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-面积测量',tooltip:'面积量测'">面积量测</a>
+                    <a id="btnChart" title="统计分析" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-chartbar',tooltip:'统计分析'">统计分析</a>
+                    <a id="btn23View" title="二三维双屏" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-horizontal',tooltip:'二三维双屏'">二三维双屏</a>
+                    <a id="btnClean" title="清除" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-trash',tooltip:'清除'">清除</a>
+                </div>
+            </div>
+            <div id="3dbar" style='display: ;'>
+                <div id="buttonbar1" style='display: block;'>
+					<a id="btnModelAttrE" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-database-edit'" onclick='set3DMode("mattredit")'>属性编辑</a>
+                    <a id="btnModelAdj" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-building-edit'" onclick='set3DMode("modeladjust")'>模型编辑</a>
+					<a id="btnModelC" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-mxcj'" onclick='set3DMode("modelcreate")'>模型创建</a>
+					<a id="btnModelTrans" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-mxbt'" onclick='set3DMode("mtransparent")'>模型半透</a>
+					<label class="separator">&nbsp;|&nbsp;</label>
+					<!-- <a id="btnMeasureDQ" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-cursor', tooltip: ''" onclick='set3DMode("point_search")'>单点查询</a> -->
+					<a id="btnAttrSearch" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-search'" onclick='set3DMode("attrSearch")'>属性查询</a>
+                    <a id="btnBuffer" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-hccx'" onclick='set3DMode("buffer")'>缓冲查询</a>
+					<a id="btnMeasurePQ" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-片区', tooltip: ''" onclick='set3DMode("region_search")'>片区查询</a>
+					<label class="separator">&nbsp;|&nbsp;</label>
+					<a id="btnFlyMotion" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-hamburg-freelance'" onclick='set3DMode("flymode")'>飞行模式</a>
+					<a id="btnMotion" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-hamburg-milestone'" onclick='set3DMode("walkmode")'>步行模式</a>
+					<a id="btnemeOpenDoor" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-eme-add-controldoor', tooltip: ''" onclick='set3DMode("opendoor")'>开门</a>
+					<a id="btnflywander" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-camera'" onclick='set3DMode("addinterestpoints")'>热点场景</a>
+                    <a id="btnflywander" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-飞行漫游'" onclick='set3DMode("routewandering")'>飞行漫游</a>
+					<!-- <a id="btnCoor" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-当前坐标'" onclick='set3DMode("mouseposition")'>当前坐标</a> -->
+                    <!-- <a id="btnView" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-dqsj'" onclick='set3DMode("getview")'>当前视角</a> -->
+					<label class="separator">&nbsp;|&nbsp;</label>
+					<a id="btnMeasureD" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-距离测量', tooltip: ''" onclick='set3DMode("measurelength")'>距离量测</a>
+                    <a id="btnMeasureA" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-面积测量'" onclick='set3DMode("measurearea")'>面积量测</a>
+                    <a id="btnMeasureH" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-高度测量'" onclick='set3DMode("measureheight")'>高度量测</a>
+                    <a id="btnMeasureS" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-空间测量'" onclick='set3DMode("measurespace")'>空间量测</a>
+                    <label class="separator">&nbsp;|&nbsp;</label>
+					<a id="btnVisibility" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-通视分析'" onclick='set3DMode("visibilityanalysis")'>通视分析</a>
+                    <a id="btnViewshed" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-视域分析'" onclick='set3DMode("viewshedanalysis")'>视域分析</a>
+					<label class="separator">&nbsp;|&nbsp;</label>
+					<a id="btnClear" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-clearall'" onclick='set3DMode("clear")'>清除</a>
+				
+				</div>
+                <div id="buttonbar2" style='display: none;'>
+					<a id="btnStateView" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-circle'" onclick='setControlMode("stateview");'>状态总览</a>
+					<a id="btnOverview" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-global'" onclick='set3DMode("undo")'>管控态势</a>
+                    <label class="separator">&nbsp;|&nbsp;</label>
+                    <a id="btnVideoMonitor" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-video'" onclick='setControlMode("video");'>视频监控</a>
+					<a id="btnComCommand" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-command'" onclick='setControlMode("telephone");'>通讯指挥</a>
+					<a id="btnRemoteDoor" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-eme-add-controldoor'" onclick='setControlMode("romotedoor");'>远程防护门</a>
+                    <a id="btnAccessDoor" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-en-guard'" onclick='setControlMode("doorarea");'>门禁分区系统</a>
+					<a id="btnInbreakAlarm" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-inbreak'" onclick='setControlMode("inbreakAlarm");'>入侵报警</a>
+                    <a id="btnFireAlarm" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-fire'" onclick='setControlMode("firealarm");'>火灾报警</a>
+					<a id="btnEQtControl" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-lidar'" onclick='setControlMode("eqcontrol");'>设备管控</a>
+                    <a id="btnRadioMonitor" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-radio'" onclick='setControlMode("undo");'>辐射监测</a>
+                    <label class="separator">&nbsp;|&nbsp;</label>
+                    <a id="btnAlarmLogs" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-alarm-r'" onclick='setControlMode("warnlog");'>报警日志</a>
+					<a id="btnParansSetting" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-settings-b'" onclick='setControlMode("argumentconfig");'>参数配置</a> 
+				</div>
+                <div id="buttonbar3" style='display: none;'>
+					<a id="btnGLtoDKview" class="easyui-linkbutton" title="进入管廊" data-options="plain: true, iconCls: 'icon-standard-database-refresh'" onclick='setSenceViewToGorZ(this);'>进入管廊</a>
+                    <a id="btnPipeShow" class="easyui-linkbutton" title="管线显示" data-options="plain: true, iconCls: 'icon-shape-pipe'" onclick='set3DMode("pipeshow")'>管线显示</a>
+                    <a id="btnPipeMTranspt" class="easyui-linkbutton" title="模型半透" data-options="plain: true, iconCls: 'icon-standard-mxbt'" onclick='set3DMode("modeltranspt")'>图层半透</a>
+                    <a id="btnPipeSColor" class="easyui-linkbutton" title="标准色显示" data-options="plain: true, iconCls: 'icon-standard-color'" onclick='set3DMode("pstardcolor")'>标准色显示</a>
+					<label class="separator">&nbsp;|&nbsp;</label>
+                    <a id="btnPipePickupQ" class="easyui-linkbutton" title="拾取查询" data-options="plain: true, iconCls: 'icon-standard-拾取'" onclick='set3DMode("pipepselt")'>拾取查询</a>
+                    <a id="btnPipeAttrQ" class="easyui-linkbutton" title="属性查询" data-options="plain: true, iconCls: 'icon-search'" onclick='set3DMode("pipeatrrQ")'>属性查询</a>
+                    <a id="btnPipeSpatialQ" class="easyui-linkbutton" title="空间查询" data-options="plain: true, iconCls: 'icon-standard-片区查询'" onclick='set3DMode("pipespatialQ")'>空间查询</a>
+					<label class="separator">&nbsp;|&nbsp;</label>
+					<a id="btnPipeAttrEdit" class="easyui-linkbutton" title="属性编辑" data-options="plain: true, iconCls: 'icon-standard-database-edit'" onclick='set3DMode("attredit")'>属性编辑</a>
+                    <a id="btnPipeDCheck" class="easyui-linkbutton" title="流向纠错" data-options="plain: true, iconCls: 'icon-standard-setting'" onclick='set3DMode("pdcheck")'>流向纠错</a>
+					<label class="separator">&nbsp;|&nbsp;</label>
+					<a id="btnPipeDownA" class="easyui-linkbutton" title="下井位置分析" data-options="plain: true, iconCls: 'icon-standard-ruby'" onclick='set3DMode("pipedown")'>下井位置分析</a>
+                    <a id="btnPipeBombA" class="easyui-linkbutton" title="爆管分析" data-options="plain: true, iconCls: 'icon-shape-bomb'" onclick='set3DMode("bombA")'>爆管分析</a>
+					<a id="btnPipeDigA" class="easyui-linkbutton" title="开挖分析" data-options="plain: true, iconCls: 'icon-shape-dig'" onclick='set3DMode("engeerdig")'>开挖分析</a>
+					<label class="separator">&nbsp;|&nbsp;</label>
+                    <a id="btnPipePositionA" class="easyui-linkbutton" title="位置分析" data-options="plain: true, iconCls: 'icon-shape-location'" onclick='set3DMode("pipeposA")'>位置分析</a>
+                    <a id="btnPipeDistA" class="easyui-linkbutton" title="管间分析" data-options="plain: true, iconCls: 'icon-shape-pdist'" onclick='set3DMode("pipedistA")'>管间分析</a>
+                    <a id="btnPipeConnectA" class="easyui-linkbutton" title="连通分析" data-options="plain: true, iconCls: 'icon-shape-connection'" onclick='set3DMode("pipeconnectA")'>连通分析</a>
+                    <a id="btnPipeFlowA" class="easyui-linkbutton" title="流向分析" data-options="plain: true, iconCls: 'icon-shape-direction'" onclick='set3DMode("pipeflowA")'>流向分析</a>
+                    <a id="btnPipeLengthA" class="easyui-linkbutton" title="长度分析" data-options="plain: true, iconCls: 'icon-shape-length'" onclick='set3DMode("pipelengthA")'>长度分析</a>
+                    <a id="btnPipeSectionA" class="easyui-linkbutton" title="横断面分析" data-options="plain: true, iconCls: 'icon-shape-section'" onclick='set3DMode("cross_section")'>横断面分析</a>
+                    <label class="separator">&nbsp;|&nbsp;</label>
+					<a id="btnPipeSettings" class="easyui-linkbutton" title="管线设置" data-options="plain: true, iconCls: 'icon-standard-setting'" onclick='set3DMode("pipesettings")'>管线设置</a>
+                   
+                </div>
+                <div id="buttonbar4" style='display: none;'>
+                    <a id="btnemeList" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-eme-list', tooltip: ''" onclick='setEmegencyMode("emelist")'>预案列表</a>
+					<a id="btnemeAdd" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-add', tooltip: ''" onclick='setEmegencyMode("emeadd")'>新建预案</a>
+                    <a id="btnemeEditor" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-eme-edit', tooltip: ''" onclick='setEmegencyMode("emeeditor")'>预案编辑</a>
+                    <label class="separator">&nbsp;|&nbsp;</label>
+					<a id="btnemeFlowchart" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-eme-pic-gl', tooltip: ''" onclick='setEmegencyMode("emecreatflowchart")'>流程图编辑</a>
+					<a id="btnemeMaterialPic" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-eme-pic-gl', tooltip: ''" onclick='setEmegencyMode("emematerialpic")'>图片管理&nbsp;|&nbsp;</a>
+					<a id="btnemeVideo" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-eme-video', tooltip: ''" onclick='setEmegencyMode("emevideo")'>输出视频</a>
+				</div>
+                <div id="buttonbar5" style='display: none;'>
+                    <a id="usermanage2" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-yhgl'">用户管理</a>
+                    <a id="response2" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-fkgl'">反馈管理</a>
+                    <label class="separator">&nbsp;|&nbsp;</label>
+					<a id="btnAttrSearch" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-application-home'" onclick='set3DMode("modelbase")'>模型库</a>
+                    <a id="btnAttrSearch" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-application-form-edit'" onclick='set3DMode("uploadmodel")'>模型库管理</a>
+					<label class="separator">&nbsp;|&nbsp;</label>
+				   <!--  <a id=""  class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-fqgl'">分区管理</a> -->
+                    <a id="record2" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-rigl'">日志管理</a>
+                    <a id="backup2" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-sjbf'">数据备份</a>
+                    <!-- <a id=""  class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-sjgx'">数据更新管理</a> -->
+                    <a id="backstagesetting" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-standard-setting'" onclick='set3DMode("backsetting")'>数据配置</a>
+					<label class="separator">&nbsp;|&nbsp;</label>
+					<a id="btnHelp" class="easyui-linkbutton" title="帮助" data-options="plain: true, iconCls: 'icon-help'" onclick='set3DMode("undo")'>帮助</a>
+  
+					<a id="btnClear" class="easyui-linkbutton" data-options="plain: true, iconCls: 'icon-hamburg-anno'" onclick='set3DMode("version")'>关于</a>
+			  </div>
+            </div>
+        </div>
+    </div>
+    <!--用于放提问问题界面-->
+    <div id="2ddiv_response" style="top: 71px; bottom: 0px; left: 0px; right: 0px; background-color: #fff; z-index: 10000; display: none; position: absolute;">
+        <iframe width="100%" id="2diframe_response" height="100%" style="position: absolute; background: none;" allowtransparency="true"></iframe>
+    </div>
+    <!--提问问题界面结束-->
+    <!-- 左侧面板：图层树，小面板 -->
+    <div region="west" title="功能面板" style="width: 250px;" class='themebg'>
+        <div id="divMenu" class="easyui-layout" fit="true" border="false">
+            <div region="center" border="false" style="overflow: hidden;">
+                <div id="divTree" class="easyui-tabs" style="height: 750px;" fit="true">
+                    <div title="图层列表" id="tablayertree" style='margin-top: 5px; overflow-y: auto;'>
+                        <ul id="layerTree" class="ztree" style="overflow: auto;"></ul>
+                        <ul id="2dlayerTree" class="ztree" style="overflow: auto; display: none;"></ul>
+                        <ul id="ycfhmDisabledTree" class="ztree" style="overflow: auto; display: none;"></ul>
+						<!-- <div id="btn_show_layer" style="position:absolute;bottom:20px;left:1px;right:1px;text-align:center;display: none;">
+							<button id="btn_glc_show_layer" class="middle btn-dark" style="margin-right:20px;" onclick="setSenceViewToGorZ(0)">管廊层</button>
+							<button id="btn_zdk_show_layer" class="middle btn-dark" onclick="setSenceViewToGorZ(1)">主洞库</button>
+						</div> -->
+                    </div>
+                    <div title="区域列表" id="equipControlTab">
+                    </div>
+                    <div title="功能列表" id="featureList" style='width: 100%; height: 100%; overflow: auto;'>
+                    </div>
+                </div>
+
+            </div>
+            <div title="操作区域" region="south" data-options="split:true,border:false,collapsed:true,collapsedSize:1"
+                style="padding: 5px; height: 250px; overflow: hidden;">
+                <iframe name="ifFunc" id="ifFunc" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+            </div>
+        </div>
+    </div>
+    <div id="3d_basicbar" class="panel-tool" style="position: absolute; top: 115px; right: 10px; z-index: 998;">
+        <a href="javascript:void(0)" title="重置" class="icon-standard-重置" onclick="set3DMode('initpos');"></a>
+        <a href="javascript:void(0)" title="漫游" class="icon-standard-漫游" onclick="set3DMode('pan');"></a>
+        <a href="javascript:void(0)" title="放大" class="icon-zoomin" onclick="set3DMode('zoomin');"></a>
+        <a href="javascript:void(0)" title="缩小" class="icon-zoomout" onclick="set3DMode('zoomout');"></a>
+        <a href="javascript:void(0)" title="正北" class="icon-standard-指北" onclick="set3DMode('north');"></a>
+        <a href="javascript:void(0)" title="俯视" class="icon-standard-俯视" onclick="set3DMode('overlook');"></a>
+        <a href="javascript:void(0)" title="旋转" class="icon-standard-旋转" onclick="set3DMode('surround');"></a>
+        <!-- <a href="javascript:void(0)" title="选择" class="icon-standard-cursor" onclick="set3DMode('ptmodelsel');"></a> -->
+        <a href="javascript:void(0)" title="清除" class="icon-standard-clearall" onclick="set3DMode('clear');"></a>
+        <a id="btn_full_screen" href="javascript:void(0)" title="全屏" class="icon-screen" onclick="set3DMode('fullscreen');"></a>
+        <a href="javascript:void(0)" title="退出" class="icon-hamburg-sign-out" onclick="set3DMode('exit');"></a>
+    </div>
+    <!-- WorldZone -->
+    <div id='worldDiv' region="center" title='三维' style="margin: 0; padding: 0; z-index: 1000; background-color: #FFFFFB;"
+        data-options="maximizable:false">
+        <div id="center_container" class="easyui-layout" data-options="fit:true">
+            <div region="north" data-options="border:false,collapsed:true,collapsedSize:0" style="overflow-y: hidden;">
+                <!--管控保障，系统类别按钮-->
+                <!--<iframe id="center-top-bg-frame" frameborder="0" style = "display: block;"></iframe>-->
+                <div id="eqControlBtnBar" class="center-top-bar" style="display: block;">
+                    <table>
+                        <tr>
+                            <td onclick="setSysTitleMode('CSXT');">除湿系统</td>
+                            <td onclick="setSysTitleMode('KTXT');">空调系统</td>
+                            <td onclick="setSysTitleMode('XFXT');">新风系统</td>
+                            <td onclick="setSysTitleMode('WSDXT');">温湿度系统</td>
+                            <td onclick="setSysTitleMode('PFXT');">排风系统</td>
+                            <td onclick="setSysTitleMode('FPXT');">废排系统</td>
+                            <td onclick="setSysTitleMode('SFXT');">三防系统</td>
+                            <td onclick="setSysTitleMode('JZXT');">加注系统</td>
+                            <td onclick="setSysTitleMode('KYZDXT');">空压制氮系统</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div id="center_container_center" region="center" class='themebg' style="overflow-y: hidden;">
+                <img id="layer1" src="core/images/map_vector.png" style="position: absolute; top: 7px; right: 65px; z-index: 999; cursor: pointer;" />
+                <img id="layer2" src="core/images/map_3d.png" style="position: absolute; top: 7px; right: 145px; z-index: 999; cursor: pointer; display: none;" />
+                <div id='my3DGlobeDiv' style="position: absolute; width: 100%; height: 100%;">
+                    <object id="__earth" type="application/x-nb-earth" width="100%" height="100%"></object>
+                </div>
+                <iframe width="100%" id="2diframe" height="100%" src='' style="position: absolute; display: block;"></iframe>
+                <iframe width="100%" id="retframe" height="100%" style="position: absolute; display: none; left: 0px; top: 0px; right: 0; bottom: 0;" frameborder="0"></iframe>
+                <!-- <div id="2ddiv_responseManage" style="width: 100%; height: 100%;z-index: 20; display: none;">
+					<iframe width="100%"  id="2diframe_responseManage" height="100%" style="position: absolute; background: none;" allowtransparency="true"></iframe>
+				</div> -->
+                <div id="2dmap" style="width: 100%; height: 100%; z-index: 20; display: block;"></div>
+                <div id="2dCT" style="position: absolute; top: 20px; left: 60px; z-index: 21; display: block;">
+                    <div id="2dCTshow" style="width: 30px; height: 28px; cursor: pointer; display: block;" class="icon-add"></div>
+                    <div id="2dCTlist" style="width: 220px; height: 360px; background: #ffffff; border-radius: 5px 5px 0 0; border: 1px solid #E5E5E5; display: none;">
+                        <div style="width: 100%; height: 28px; border-bottom: 1px solid #E4DFDF;">
+                            <div id="2dCThide" style="width: 28px; height: 28px; cursor: pointer; float: left;" class="icon-remove"></div>
+                            <span style="font-size: 14px; font-weight: 700; font-family: 宋体; line-height: 28px;">总览图</span>
+                        </div>
+                        <div id="2dctcen" style="width: 100%; height: 330px;" class="ztree"></div>
+                    </div>
+                </div>
+                <div id="systemSetView" class="themebg" style="position: absolute; width: 100%; height: 100%; z-index: 0; top: 0; display: none;">
+                    <div style="height: 30px; margin-top: 10px; width: 100%;">
+                        <div id="yunweiTabBtn" style="height: 30px; margin-left: 10px;">
+                            <input type="button" class="panelSelected" style="float: left; padding-left: 10px; padding-right: 10px; display: block" value="用户列表" id="tabOnebtn" onclick="appContext2d.systemSet.btnClick(this.id)">
+                            <input type="button" class="panelUnSelected" style="float: left; margin-left: 10px; padding-left: 10px; padding-right: 10px;" value="角色管理" id="tabTwobtn" onclick="appContext2d.systemSet.btnClick(this.id)">
+                            <input type="button" class="panelUnSelected" style="float: left; margin-left: 10px; padding-left: 10px; padding-right: 10px;" value="分组管理" id="tabThreebtn" onclick="appContext2d.systemSet.btnClick(this.id)">
+                            <input type="button" class="panelSelected" style="float: left; margin-left: 10px; padding-left: 10px; padding-right: 10px; display: none;" value="" id="tabFourbtn">
+                        </div>
+                        <div style="height: 600px; border: 1px solid rgb(105, 192, 220); margin-left: 10px; margin-right: 10px;" id="contentView">
+                        </div>
+                    </div>
+                </div>
+                <div id="fpmap" style="width: 100%; height: 100%; display: none; z-index: 9999;">
+                    <div style="margin-left: 2%; width: 47%; height: 100%; float: left; border: 1px solid #000000">
+                        <div id="fptitle" style="text-align: center; font-size: 20px; font-weight: bolder; padding-top: 10px;">鄂州市总体规划图1</div>
+                        <div id="firstmap" style="width: 100%; border-top: 1px solid #000000"></div>
+                    </div>
+                    <div style="width: 47%; height: 100%; margin-left: 2%; float: left; border: 1px solid #000000">
+                        <div id="ffptitle" style="text-align: center; font-size: 20px; font-weight: bolder; padding-top: 10px;">鄂州市总体规划图2</div>
+                        <div id="secondmap" style="width: 100%; border-top: 1px solid #000000"></div>
+                    </div>
+                </div>
+                <!--报警滚动条-->
+                <iframe id="center-top-gd-frame" frameborder="0" style="display: none; position: absolute; top: 0px; width: 100%; height: 30px; z-index: 9;"></iframe>
+                <div id="eqControlBtnBarGD" style="display: none; position: absolute; left: 1px; top: 0px; height: 30px; width: 100%; z-index: 999; background: rgb(121,121,121)">
+                    <div id="scrollobj" style="white-space: nowrap; overflow: hidden; position: absolute; left: 0px; right: 75px; cursor: pointer; height: 20px; padding-top: 2px; background-color: rgb(121, 121, 121); color: white; font-family: '楷体'; font-size: 18px; line-height: 25px; width: 100%;" onmouseover="javascript:_stop();" onmouseout="javascript:_start();">
+                    </div>
+                    <div style="position: absolute; right: 5px; top: 2px;">
+                        <button id="slocation" class="middle btn-red" style="width: 70px;">定&nbsp;位</button>
+                    </div>
+                </div>
+                <!-- 管控保障,设备状态显示面板 -->
+                <iframe id="center-bottom-equi-frame" frameborder="0" style="display: none;"></iframe>
+                <div id="eqStatusRunBtnBar" class="center-bottom-bar" style="display: none;"></div>
+                <!-- 远程防护门状态 -->
+                <iframe id="center-bottom-ycfhm-frame" frameborder="0" style="display: none;"></iframe>
+                <div id="ycfhmStatusRunBtnBar" class="center-bottom-ycfhm-bar" style="display: none;"></div>
+                <!-- 入侵报警布防状态 -->
+                <iframe id="center-bottom-inbreak-frame" frameborder="0" width="130px" style="display: none; width: 130px;"></iframe>
+                <div id="inbreakStatusBtnBar" class="center-bottom-ycfhm-bar" style="display: none; width: 110px; height: 70px; padding-right: 10px;"></div>
+            </div>
+            <div region="east" id='paneleast' class='themebg' data-options="collapsed:true, border:false,collapsedSize:1" style="width: 550px; overflow-y: hidden;">
+                <iframe name="ifRightPanel" id="ifRightPanel" frameborder="0" style="width: 100%; height: 100%;"></iframe>
+            </div>
+            <!-- ResultZone -->
+            <div region="south" id='panelsouth' class='themebg' title="结果集" data-options="iconCls:'icon-standard-information',collapsed:true, border:false,collapsedSize:1" split="true" style="height: 200px; overflow-y: hidden;">
+                <div id="tabs" class="easyui-tabs" style="height: 350px;"></div>
+                <div id="detail_dialog" class="easyui-dialog themebg" data-options="iconCls: 'icon-standard-information',title:'详细信息',draggable:false,resizable:false,closed:true,inline:true" style="height: 100px;">
+                    <div style="width: 100%; height: 100%;">
+                        <table id="dg_detail" class="easyui-datagrid" data-options="fit:true" style=""></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹出大面板 -->
+    <div id="divOpFunc" title="面板" style="padding: 2px; width: 250px;">
+        <iframe name="ifrmOpFunc" id="ifrmOpFunc" frameborder="0" style="width: 100%; height: 99%;"></iframe>
+    </div>
+    <!-- 弹出对话框 -->
+    <div id="divCenterDlg" style='position: absolute; z-index: 999; display: none'>
+        <iframe id='ifrmDialog' name='ifrmDialog' frameborder='0' style="width: 100%; height: 100%; z-Index: -1;"></iframe>
+    </div>
+    <!-- emegency对话框 -->
+    <div id="divEmegencyDlg" style='position: absolute; z-index: 999; display: none'>
+        <iframe id='ifrmEmegency' name='ifrmDialog' frameborder='0' style="width: 100%; height: 100%; z-Index: -1;"></iframe>
+    </div>
+    <!-- 选择图片对话框 -->
+    <div id="divSelectImgDlg" style='position: absolute; z-index: 999; display: none'>
+        <iframe id='ifrmSelectImg' name='ifrmDialog' frameborder='0' style="width: 100%; height: 100%; z-Index: -1;"></iframe>
+    </div>
+    <div id="divEmegencyDlgeditor" style='position: absolute; z-index: 999; display: none'>
+        <iframe id='ifrmEmegencyeditor' name='ifrmDialog' frameborder='0' style="width: 100%; height: 100%; z-Index: -1;"></iframe>
+    </div>
+    <!-- <div id="divEmegencyDlgEye" style='position: absolute; z-index: 999; display: none'>
+		<iframe id='ifrmEmegencyEye' name='ifrmDialog' frameborder='0' style="width: 100%; height: 100%; z-Index: -1;"></iframe>
+	</div> -->
+    <div id="divEmeDlgFlowchart" style='position: absolute; z-index: 999; display: none'>
+        <iframe id='ifrmEmeFlowchart' name='ifrmDialog' frameborder='0' style="width: 100%; height: 100%; z-Index: -1;"></iframe>
+    </div>
+    <!-- HalfDialogZone 此对话框宽度是三维区域的1/2 -->
+    <div id="divHalfDlg" style="position: absolute; display: none; z-Index: 999">
+        <iframe id="ifrmHalfDlg" name='ifrmHalfDlg' frameborder='0' style="width: 100%; height: 100%; z-Index: -1;"></iframe>
+    </div>
+    <!--二维对话框-->
+    <div id="statWin" class="easyui-window" title="信息" style="z-index: 999; width: 700px; height: 500px;" minimizable="false" maximizable="false" closed="true">
+    </div>
+
+    <!--运维管理中用户组的右键菜单-->
+    <div id="yunweiGroupMenuAttr" class="easyui-menu" style="width: 100px;">
+        <div id="bMenu_addgroup" iconcls="icon-edit">新建部门</div>
+        <div id="bMenu_editgroup" iconcls="icon-clear">修改信息</div>
+        <div id="bMenu_delgroup" iconcls="icon-tip">删除分组</div>
+    </div>
+
+    <!--以下是与管控保障相关的对话框,所有对话框来此集合-->
+    <div id="divControlDlg" style='position: absolute; z-index: 999; display: none'>
+        <iframe id='ifrmControlDlg' name='ifrmControlDlg' frameborder='0' style="width: 100%; height: 100%; z-Index: 999;"></iframe>
+    </div>
+    <div id="divControlDlgWebsocket" style='position: absolute; z-index: 999; display: none'>
+        <iframe id='ifrmControlDlgWebsocket' name='ifrmControlDlgWebsocket' frameborder='0' style="width: 100%; height: 100%; z-Index: 999;"></iframe>
+    </div>
+
+    <!--以上是与管控保障相关的对话框-->
+
+    <!-- 树右键菜单(只针对图层列表树)-->
+    <div id="contextMenuLayerAttr" class="easyui-menu" style="width: 100px;">
+        <div id="bMenu_editfeature" iconcls="icon-edit">标注要素</div>
+        <div id="bMenu_cleareditfeature" iconcls="icon-clear">取消标注</div>
+        <div id="bMenu_selectall" iconcls="icon-tip">全选</div>
+        <div id="bMenu_clearselectall" iconcls="icon-clear">清除全选</div>
+        <div id="bMenu_remove" iconcls="icon-remove">移除</div>
+        <div id="bMenuS_attr" iconcls="icon-edit">属性</div>
+    </div>
+    <div id="contextMenuLayerAttr2" class="easyui-menu" style="width: 100px;">
+        <div id="bMenu_remove2" iconcls="icon-remove">移除</div>
+    </div>
+    <!-- 预案右键菜单 -->
+    <div id="contextMenuEmergency-black" class="easyui-menu" style="width: 100px;">
+        <div id="bMenu_eme_addtype" name="black-menu" iconcls="icon-eme-add-star">新建预案类型</div>
+    </div>
+    <div id="contextMenuEmergency" class="easyui-menu" style="width: 100px;">
+        <div id="bMenu_eme_play" name="tree_menu" iconcls="icon-play">播放</div>
+        <div id="bMenu_eme_clear" name="tree_menu" iconcls="icon-no">删除</div>
+        <div id="bMenu_eme_rname" name="tree_menu" iconcls="icon-edit">重命名</div>
+        <div id="bMenu_eme_attr" name="tree_menu" iconcls="icon-eme-attibutes">属性</div>
+    </div>
+    <!-- 模型库 -->
+    <div id='modelDiv' style='position: absolute; z-index: 999; display: none'>
+        <iframe id="ifrmModel" name="ifrmModel" style="width: 100%; height: 100%; z-Index: -1;"></iframe>
+    </div>
+    <!-- 运维中弹出对话框 -->
+    <div id="mask" style="width: 100%; height: 100%; display: none; z-index: 10; position: absolute; background: #E5E9F3; opacity: 0.5;"></div>
+    <div id="useruId" style="width: 520px; height: 450px; display: none; z-index: 11; position: absolute; background: rgba(193,195,205,0.5); border-radius: 5px;">
+        <div id="aaa" style="width: 500px; height: 430px; background: #ffffff; z-index: 100001; position: absolute; top: 10px; left: 10px;"></div>
+    </div>
+    <!-- 运维中弹出对话框end -->
+
+    <!-- 管控保障中的门禁区域系统弹出面板开始 -->
+    <!-- <div id="doorareaPanel" style="display:none;padding: 5px; height: 350px;width:760px; overflow: hidden;background-color:rgb(231, 232, 233);z-index: 12;position: absolute;left: 35%;top: 30%;">
+        <iframe name="doorareaiframe" id="doorareaiframe" frameborder="0" src="" style="width: 100%; height: 100%;"></iframe>
+    </div> -->
+    <div id="doorareaListDiv" style="display: none; position: absolute; left: 35%; top: 30%; height: 450px; width: 500px; z-index: 11; background-color: aliceblue;">
+        <div style="overflow: hidden; text-align: center; padding-left: 1px; padding-top: 0px;">
+            <div class="managerDiv" style="margin-bottom: 5px;">
+                <div class="managerDivTitle">区域人员列表</div>
+                <div class="managerDivclose" style="float: right; padding-right: 10px;" onclick="comFor2d.closeDoorAreaFrame();"></div>
+            </div>
+            <div>
+                <table cellspacing="0" cellpadding="0" border="1" style="width: 100%; margin-top: 5px; text-align: center; font-family: 微软雅黑; font-size: 14px;">
+                    <thead style="">
+                        <tr style="background-color: rgb(243, 243, 243); height: 30px; font-size: 15px; color: #3C6B97">
+                            <th>序号
+                            </th>
+                            <th>卡编号
+                            </th>
+                            <th style="">姓名</th>
+                            <th>职务</th>
+                            <th>进入时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doorAreaList"></tbody>
+                    <tfoot>
+                        <tr>
+                            <td style="color: rgb(60, 107, 151); height: 30px;" id="doorareaPageView" colspan="9"></td>
+                        </tr>
+                    </tfoot>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- 管控保障中的门禁区域系统弹出面板结束-->
+    <div class="easyui-dialog" id="inbreakESetting_dialog" title="报警主机设置" data-options="collapsible:true,closed:true,height:240,width:430,href:'control/page/inbreakAlarm/settings.html'" style="overflow: hidden;">
+    </div>
+</body>
+<script type="text/javascript">
+    var doms = document.getElementsByName('btnmodel');
+    for (var i = 0; i < doms.length; i++) {
+        $(doms[i]).click(function (e) {
+            for (var n = 0; n < doms.length; n++) {
+                if (e.target != doms[n]) {
+                    doms[n].style.backgroundColor = "#69C0DC";
+                    doms[n].style.color = 'white';
+                    if (document.getElementById('buttonbar' + (n + 1))) {
+                        $('#buttonbar' + (n + 1)).hide();
+                    }
+                } else {
+                    if (is2dOr3d() === '3d') {
+                        $('#2dbar').hide();
+                        $('#3dbar').show();
+                    } else {
+                        $('#2dbar').show();
+                        $('#3dbar').hide();
+                    }
+                    doms[n].style.backgroundColor = "#ffffff";
+                    doms[n].style.color = 'black';
+                    if (document.getElementById('buttonbar' + (n + 1))) {
+                        $('#buttonbar' + (n + 1)).show();
+                    }
+                    if (doms[n].innerHTML === '管线管理') {
+                        appContext2d.layerManager.skipMap("3d");
+                        setPipeLayersStatus(1);
+						var antext=getbtnGLtoDKviewText();
+						if(!antext){
+							antext="进入管廊";
+						}
+						$('#btnGLtoDKview').linkbutton({    
+							text:antext 
+						});  
+                    } else if (doms[n].innerHTML === '应急预案') {
+                        appContext2d.layerManager.skipMap("3d");
+                    } else if (doms[n].innerHTML === '态势集成') {
+                        //appContext2d.layerManager.skipMap("3d");
+                    } else if (doms[n].innerHTML === '维护管理') {
+                        $('#3dbar').show();
+                        $('#2dbar').hide();
+                    }
+                    if (doms[n].innerHTML !== '管控保障') {
+                        praControlInfo.clearControlModuleAllContent();
+                        praControlInfo.statistic.clearAllUpdateTimeout();
+                        isGKBZpart = false;
+                    } else if (doms[n].innerHTML === '管控保障') {
+                        isGKBZpart = true;
+                        $('#2dbar').hide();
+                        $('#3dbar').show();
+                    }
+                    if (doms[n].innerHTML !== '维护管理') {
+                        appContext2d.systemSet.unload();
+                        //$('#2dbar').hide();
+                        //$('#3dbar').show();
+                    } else
+                        $("#view_123456789").remove();
+                }
+            }
+        });
+        //$(doms[i]).click(function (e) {alert('fff')});
+    }
+    $('#toolbar .easyui-linkbutton').click(function () {
+        if (this.id != 'btnMotion' && this.id != 'btnFlyMotion') {
+            destoryLittleDialog();
+        }
+    });
+
+    $("div.center-top-bar table td").each(function () {
+        $(this).click(function () {
+            $(this).addClass("selected");
+            $(this).siblings().removeClass("selected");
+        });
+    });
+    $("#divControlDlgWebsocket").css('width', 0).css('height', 0).css('top', 50).css('left', 50);
+    $("#ifrmControlDlgWebsocket").attr('src', 'control/page/Websocket/websocket.html');
+    $("#divControlDlgWebsocket").show();
+    /****无缝滚动代码***/
+    function _scroll(obj) {
+        /*往左*/
+        var tmp = (obj.scrollLeft)++;
+        //当滚动条到达右边顶端时  
+        if (obj.scrollLeft == tmp) {
+            obj.innerHTML += obj.innerHTML;
+        }
+        //当滚动条滚动了初始内容的宽度时滚动条回到最左端  
+        if (obj.scrollLeft >= obj.firstChild.offsetWidth) {
+            obj.scrollLeft = 0;
+        }
+    };
+    var _timer = null;
+    //var _timer = setInterval("_scroll(document.getElementById('scrollobj'))", 10);  
+    function _stop() {
+        if (_timer != null) {
+            clearInterval(_timer);
+            _timer = null
+        }
+    };
+    function _start() {
+        _timer = setInterval("_scroll(document.getElementById('scrollobj'))", 10);
+    };
+</script>
+<script type="text/javascript" src="core/js/tooltips.js"></script>
+<script type="text/javascript" src="core/lib/tree/js/jquery.ztree.excheck-3.5.min.js"></script>
+<script type="text/javascript" src="core/lib/tree/js/jquery.ztree.exhide-3.5.min.js"></script>
+<script type="text/javascript" src="core/js/imessage.js"></script>
+<script type="text/javascript" src="core/js/datagrid.js"></script>
+<script type="text/javascript" src="core/js/userLayer.js"></script>
+<script type="text/javascript" src="core/js/model.js"></script>
+<script type="text/javascript" src="core/js/menu.js"></script>
+<script type="text/javascript" src="core/js/proj4.js"></script>
+<script type="text/javascript" src="core/lib/easyui/easyui_menu_extend.js"></script>
+<script type="text/javascript" src="core/lib/jquery/jquery-fullscreen.js"></script>
+<script type="text/javascript" src="core/js/map23d.js"></script>
+<script type="text/javascript" src="core/lib/earthextend/NewMapEarth.js"></script>
+<script type="text/javascript" src="core/js/pipeline.js"></script>
+<script type="text/javascript" src="core/js/plinedatagrid.js"></script>
+<script type="text/javascript" src="core/lib/hzip/hzip.js"></script>
+
+<script type="text/javascript" src="core/js/door.js"></script>
+<!--下面是emegency的js-->
+<script type="text/javascript" src="emergency/core/js/e_main.js"></script>
+<script type="text/javascript" src="emergency/core/js/emergency.js"></script>
+<script type="text/javascript" src="emergency/core/js/eme_extend.js"></script>
+<!--下面是二维用到的js-->
+<script type="text/javascript" src="core/2djs/require.js"></script>
+<script type="text/javascript" src="core/2djs/appContext.js"></script>
+<script type="text/javascript" src="core/2djs/Echarts/echarts-all.js"></script>
+<script type="text/javascript" src="core/2djs/DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="core/2djs/main.js"></script>
+<!--下面是运维管理的js-->
+<script type="text/javascript" src="control/core/lib/laydate/laydate.js"></script>
+<!--下面是cotrol管控保障的js-->
+<script type="text/javascript" src="control/core/js/c_main.js"></script>
+<script type="text/javascript" src="control/core/js/controls.js"></script>
+<script type="text/javascript" src="control/settings/config_equip.js"></script>
+<script type="text/javascript" src="control/core/js/statistics.js"></script>
+<!--下面是通讯指挥的js-->
+<script type="text/javascript" src="control/core/lib/telephone/js2.js"></script>
+<script type="text/javascript" src="control/core/lib/telephone/txzh.js"></script>
+<!--弹出面板-->
+<!-- <script src="core/2djs/lhgdialog/ASRLhDialog.js"></script> -->
+<script src="core/2djs/NBaiduDialog/NBaiduDialog.js"></script>
+</html>
